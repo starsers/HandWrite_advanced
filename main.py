@@ -116,6 +116,14 @@ class Windows(QtWidgets.QDialog, Ui_Form):
         self.params["default_perturb_y_sigma"] = float(self.lineEdit_perturb_y_sigma.text())
         self.params["default_perturb_theta_sigma"] = float(self.lineEdit_perturb_theta_sigma.text())
 
+    def save_template(self,path:str):
+        self.generator_engine.save_template(path)
+    
+    def load_template(self,path:str):
+        self.generator_engine.load_template(path)
+        self.set_default()
+        
+
     def get_text_from_textedit_main(self):
         return self.textEdit_main.toPlainText()
 

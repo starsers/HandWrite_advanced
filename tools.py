@@ -31,7 +31,7 @@ class BasicTools(object):
         }
 
     @staticmethod
-    def get_ttf_file_path() -> (list, list):
+    def get_ttf_file_path() -> tuple[list[str], list[str]]:
         ttf_library_path = "ttf_library"
         ttf_files = []
         ttf_files_path = []

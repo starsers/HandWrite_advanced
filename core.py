@@ -9,13 +9,13 @@ from tools import BasicTools
 class handwrite_generator(object):
     def __init__(self):
         self.template_params = {
-            "rate": 4,  # 图片缩放比例
-            "default_paper_x": 667,  # 默认纸张宽度 px
-            "default_paper_y": 945,  # 默认纸张高度 px
+            "rate": 8,  # 图片缩放比例
+            "default_paper_x": 1400,  # 默认纸张宽度 px
+            "default_paper_y": 1000,  # 默认纸张高度 px
             "default_font": BasicTools.get_ttf_file_path()[1][0],  # 默认字体文件路径
             "default_img_output_path": "outputs",  # 默认图片输出路径
             "default_font_size": 30,  # 默认字体大小
-            "default_line_spacing": 70,  # 默认行间距 px
+            "default_line_spacing": 40,  # 默认行间距 px
             "default_top_margin": 10,  # 默认顶部留白 px
             "default_bottom_margin": 10,  # 默认底部留白 px
             "default_left_margin": 10,  # 默认左边留白 px
@@ -34,6 +34,44 @@ class handwrite_generator(object):
         }
         self.template = None    # 模板
 
+    def save_template(self, path):
+        if self.template is None:
+            raise ValueError("Template not generated yet.")
+        self.save_to_file(path)
+        return path
+    
+    def save_to_file(self, path):
+        if self.template is None:
+            raise ValueError("Template not generated yet.")
+        # 把template_params保存到文件
+        with open(path, 'w') as f:
+            for key, value in self.template_params.items():
+                f.write(f"{key}: {value}\n")
+        return path
+        
+    def load_template(self, path):
+        self.load_template_from_file(path)
+        return self.template
+    def load_template_from_file(self, path):
+        # 从文件读取template_params
+        with open(path, 'r') as f:
+            for line in f:
+                key, value = line.strip().split(': ')
+                if key in self.template_params:
+                    if value.startswith('(') and value.endswith(')'):
+                        # 解析元组
+                        self.template_params[key] = tuple(map(int, value.strip('()').split(',')))
+                    elif value.isdigit():
+                        # 解析整数
+                        self.template_params[key] = int(value)
+                    elif value.replace('.', '', 1).isdigit():
+                        # 解析浮点数
+                        self.template_params[key] = float(value)
+                    else:
+                        # 其他情况直接赋值
+                        self.template_params[key] = value
+        self.generate_template()
+        return self.template
     def modify_template_params(self, **kwargs):
         for key, value in kwargs.items():
             self.template_params[key] = value
